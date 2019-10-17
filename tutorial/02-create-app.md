@@ -410,16 +410,17 @@
         initialRouteName: 'AuthLoading'
       }
     ));
+    ```
 
-1. Save all of your changes.
+1. 保存所有更改。
 
-1. Reload the application in your emulator.
+1. 在仿真程序中重新加载应用程序。
 
-The app's menu should work to navigate between the two fragments and change when you tap the **Sign in** or **Sign out** buttons.
+在点击 "登录 **" 或 "注销** **"** 按钮时，应用的菜单应工作在两个片段之间导航并发生变化。
 
-![Screenshots of the application on Android](./images/android-app-screens.png)
+![Android 上的应用程序的屏幕截图](./images/android-app-screens.png)
 
-![Screenshots of the application on iOS](./images/ios-app-screens.png)
+![IOS 上的应用程序的屏幕截图](./images/ios-app-screens.png)
 
 > [!NOTE]
-> You may receive warnings when running the app about Async Storage or componentWillUpdate. For the purposes of this tutorial, you can dismiss those warnings.
+> 运行有关 Async Storage 或 componentWillUpdate 的应用程序时，可能会收到警告。 出于本教程的目的，您可以消除这些警告。
