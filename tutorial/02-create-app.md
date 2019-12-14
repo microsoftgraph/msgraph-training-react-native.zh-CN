@@ -2,17 +2,16 @@
 
 首先创建新的响应本机项目。
 
-1. 在要创建项目的目录中打开命令行界面（CLI）。 运行以下命令以安装[响应本机 cli](https://github.com/facebook/react-native)工具并创建新的响应本机项目。
+1. 在要创建项目的目录中打开命令行界面（CLI）。 运行以下命令，运行[响应本机的 cli](https://github.com/facebook/react-native)工具并创建新的响应本机项目。
 
     ```Shell
-    npm install -g react-native-cli
-    react-native init GraphTutorial
+    npx react-native init GraphTutorial
     ```
 
 1. **可选：** 通过运行项目验证您的开发环境是否已正确配置。 在 CLI 中，将目录更改为刚创建的**GraphTutorial**目录，并运行下列命令之一。
 
-    - 对于 iOS：`react-native run-ios`
-    - 对于 Android：启动 Android 仿真程序实例并运行`react-native run-android`
+    - 对于 iOS：`npx react-native run-ios`
+    - 对于 Android：启动 Android 仿真程序实例并运行`npx react-native run-android`
 
 ## <a name="install-dependencies"></a>安装依赖项
 
@@ -29,10 +28,9 @@
 1. 运行以下命令。
 
     ```Shell
-    npm install react-navigation@3.11.1 react-native-gesture-handler@1.3.0 react-native-reanimated@1.1.0
-    npm install react-native-elements@1.1.0 react-native-vector-icons@6.6.0 moment@2.24.0
-    npm install react-native-app-auth@4.4.0 @microsoft/microsoft-graph-client@1.7.0
-    react-native link react-native-vector-icons
+    npm install react-navigation@3.11.1 react-native-gesture-handler@1.5.2 react-native-reanimated@1.4.0
+    npm install react-native-elements@1.2.7 react-native-vector-icons@6.6.0 moment@2.24.0
+    npm install react-native-app-auth@4.4.0 @microsoft/microsoft-graph-client@2.0.0
     ```
 
 ### <a name="link-and-configure-dependencies-for-ios"></a>链接和配置 iOS 的依存关系
@@ -45,6 +43,29 @@
 
     ```Shell
     pod install
+    ```
+
+1. 在文本编辑器中打开**GraphTutorial/ios/GraphTutorial/Info. plist**文件。 将以下代码添加到文件中`</dict>`最后一行的前面。
+
+    ```xml
+    <key>UIAppFonts</key>
+    <array>
+      <string>AntDesign.ttf</string>
+      <string>Entypo.ttf</string>
+      <string>EvilIcons.ttf</string>
+      <string>Feather.ttf</string>
+      <string>FontAwesome.ttf</string>
+      <string>FontAwesome5_Brands.ttf</string>
+      <string>FontAwesome5_Regular.ttf</string>
+      <string>FontAwesome5_Solid.ttf</string>
+      <string>Foundation.ttf</string>
+      <string>Ionicons.ttf</string>
+      <string>MaterialIcons.ttf</string>
+      <string>MaterialCommunityIcons.ttf</string>
+      <string>SimpleLineIcons.ttf</string>
+      <string>Octicons.ttf</string>
+      <string>Zocial.ttf</string>
+    </array>
     ```
 
 1. 在文本编辑器中打开**GraphTutorial/ios/GraphTutorial/AppDelegate**文件。 将其内容替换为以下内容。
@@ -76,7 +97,7 @@
     ]
     ```
 
-1. 保存该文件。 该`defaultConfig`条目应如下所示。
+    该`defaultConfig`条目应如下所示。
 
     ```Gradle
     defaultConfig {
@@ -90,6 +111,14 @@
         ]
     }
     ```
+
+1. 将以下行添加到文件末尾。
+
+    ```Gradle
+    apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+    ```
+
+1. 保存文件。
 
 ## <a name="design-the-app"></a>设计应用程序
 
@@ -355,6 +384,9 @@
       }
     });
     ```
+
+1. 在名为**images**的**GraphTutorial**目录中创建一个新目录。
+1. 在此目录中添加名为**no-profile-pic**的默认配置文件映像。 您可以使用任何您喜欢的图像，也可以使用[此示例中的](https://github.com/microsoftgraph/msgraph-training-react-native/blob/master/demos/01-create-app/GraphTutorial/images/no-profile-pic.png)任何图像。
 
 1. 打开**GraphTutorial/app.config**文件，并将整个内容替换为以下内容。
 
