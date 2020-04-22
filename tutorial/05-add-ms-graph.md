@@ -8,19 +8,7 @@
 
 1. 打开**GraphTutorial/graph/GraphManager**文件，并将以下方法添加到`GraphManager`类中。
 
-    ```js
-    static getEvents = async() => {
-      // GET /me/events
-      return graphClient.api('/me/events')
-        // $select='subject,organizer,start,end'
-        // Only return these fields in results
-        .select('subject,organizer,start,end')
-        // $orderby=createdDateTime DESC
-        // Sort results by when they were created, newest first
-        .orderby('createdDateTime DESC')
-        .get();
-    }
-    ```
+    :::code language="typescript" source="../demo/GraphTutorial/graph/GraphManager.ts" id="GetEventsSnippet":::
 
     > [!NOTE]
     > 考虑中`getEvents`的代码执行的操作。
@@ -31,10 +19,11 @@
 
 1. 打开**GraphTutorial/views/CalendarScreen**并将其全部内容替换为以下代码。
 
-    ```JSX
+    ```typescript
     import React from 'react';
     import {
       ActivityIndicator,
+      Alert,
       FlatList,
       Modal,
       ScrollView,
@@ -42,18 +31,41 @@
       Text,
       View,
     } from 'react-native';
-    import { Icon } from 'react-native-elements';
+    import { createStackNavigator } from '@react-navigation/stack';
+
+    import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
     import { GraphManager } from '../graph/GraphManager';
 
-    export default class CalendarScreen extends React.Component {
-      static navigationOptions = ({navigation}) => {
-        return {
-          title: 'Calendar',
-          headerLeft: <Icon iconStyle={{ marginLeft: 10, color: 'white' }} size={30} name="menu" onPress={navigation.toggleDrawer} />
-        };
-      }
+    const Stack = createStackNavigator();
+    const initialState: CalendarScreenState = { loadingEvents: true, events: []};
+    const CalendarState = React.createContext(initialState);
 
-      state = {
+    type CalendarScreenState = {
+      loadingEvents: boolean;
+      events: any[];
+    }
+
+    // Temporary JSON view
+    const CalendarComponent = () => {
+      const calendarState = React.useContext(CalendarState);
+
+      return (
+        <View style={styles.container}>
+          <Modal visible={calendarState.loadingEvents}>
+            <View style={styles.loading}>
+              <ActivityIndicator animating={calendarState.loadingEvents} size='large' />
+            </View>
+          </Modal>
+          <ScrollView>
+            <Text>{JSON.stringify(calendarState.events, null, 2)}</Text>
+          </ScrollView>
+        </View>
+      );
+    }
+
+    export default class CalendarScreen extends React.Component {
+
+      state: CalendarScreenState = {
         loadingEvents: true,
         events: []
       };
@@ -67,23 +79,31 @@
             events: events.value
           });
         } catch(error) {
-          alert(error);
+          Alert.alert(
+            'Error getting events',
+            JSON.stringify(error),
+            [
+              {
+                text: 'OK'
+              }
+            ],
+            { cancelable: false }
+          );
         }
       }
 
-      // Temporary JSON view
       render() {
         return (
-          <View style={styles.container}>
-            <Modal visible={this.state.loadingEvents}>
-              <View style={styles.loading}>
-                <ActivityIndicator animating={this.state.loadingEvents} size='large' />
-              </View>
-            </Modal>
-            <ScrollView>
-              <Text>{JSON.stringify(this.state.events, null, 2)}</Text>
-            </ScrollView>
-          </View>
+          <CalendarState.Provider value={this.state}>
+            <Stack.Navigator screenOptions={ headerOptions }>
+              <Stack.Screen name='Calendar'
+                component={ CalendarComponent }
+                options={{
+                  title: 'Calendar',
+                  headerLeft: () => <DrawerToggle/>
+                }} />
+            </Stack.Navigator>
+          </CalendarState.Provider>
         );
       }
     }
@@ -119,25 +139,20 @@
 
 现在，您可以将 JSON 转储替换为以用户友好的方式显示结果的内容。 在本节中，您将添加`FlatList`到日历屏幕以呈现事件。
 
-1. 打开**GraphTutorial/graph/GraphManager**文件，并将以下`import`语句添加到文件顶部。
+1. 打开**GraphTutorial/graph/屏幕/CalendarScreen**文件，并将以下`import`语句添加到文件顶部。
 
-    ```js
+    ```typescript
     import moment from 'moment';
     ```
 
-1. 将以下方法添加**** 到类`CalendarScreen`声明的上方。
+1. 将以下方法添加**above**到类`CalendarScreen`声明的上方。
 
-    ```js
-    convertDateTime = (dateTime) => {
-      const utcTime = moment.utc(dateTime);
-      return utcTime.local().format('MMM Do H:mm a');
-    };
-    ```
+    :::code language="typescript" source="../demo/GraphTutorial/screens/CalendarScreen.tsx" id="ConvertDateSnippet":::
 
-1. 将`render`方法`ScrollView`中的替换为以下项。
+1. 将`CalendarComponent`方法`ScrollView`中的替换为以下项。
 
-    ```JSX
-    <FlatList data={this.state.events}
+    ```typescript
+    <FlatList data={calendarState.events}
       renderItem={({item}) =>
         <View style={styles.eventItem}>
           <Text style={styles.eventSubject}>{item.subject}</Text>
